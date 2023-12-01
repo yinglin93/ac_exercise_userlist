@@ -2,27 +2,31 @@ const BASE_URL = "https://user-list.alphacamp.io"
 const INDEX_URL = BASE_URL + "/api/v1/users/"
 const users = []
 const dataPanel = document.querySelector('#data-panel')
+const modalContent = document.querySelector('#modal-content')
 
 const genderSelector = document.querySelector('#genderSelector')
 const regionSelector = document.querySelector('#regionSelector')
 
 let filteredList = []
 const filterForm = document.querySelector('#filter-form')
-const genderFilterForm = document.querySelector('#gender-filter')
+const clearBtn = document.querySelector('#clear-btn')
+
+const favoriteList = JSON.parse(localStorage.getItem('favoriteUsers')) || []
 
 const USERS_PER_PAGE = 12
 const paginator = document.querySelector('#paginator')
 
 // 將user資料放進去
 function renderUserList(data) {
+  const favoriteListId = favoriteList.map((user) => user.id)
   let userHTML = ''
 
   data.forEach((item) => {
     userHTML += `
-    <div class="col mb-3">
+    <div clas s= "col mb-3">
         <div class="card h-100">
           <div class="favorite-icon">
-            <i class="fa-regular fa-heart add-to-favorite" data-id="${item.id}"></i>
+            <i class="fa-regular fa-heart add-to-favorite ${favoriteListId.includes(item.id) ? 'checked' : ''}" data-id="${item.id}"></i>
           </div>
           <img src="${item.avatar}" class="card-img-top show-user-info" alt="User Avatar" data-bs-toggle="modal" data-bs-target="#userModal" data-id="${item.id}">
           <div class="card-body">
@@ -67,30 +71,23 @@ function addRegionOptionList() {
 
 // UserModal
 function showUserMadal(id) {
-  const userTitle = document.querySelector('#user-modal-title')
-  const userBirthday = document.querySelector('#user-modal-birthday')
-  const userAge = document.querySelector('#user-modal-age')
-  const userEmail = document.querySelector('#user-modal-email')
-  const userGender = document.querySelector('#user-modal-gender')
-  const userRegion = document.querySelector('#user-modal-region')
-  const userImage = document.querySelector('#user-modal-image')
+  const userTitle = document.querySelector("#user-modal-title")
+  const userBirthday = document.querySelector("#user-modal-birthday")
+  const userAge = document.querySelector("#user-modal-age")
+  const userEmail = document.querySelector("#user-modal-email")
+  const userGender = document.querySelector("#user-modal-gender")
+  const userRegion = document.querySelector("#user-modal-region")
+  const userImage = document.querySelector("#user-modal-image")
 
-  axios
-    .get(INDEX_URL + id)
-    .then((response) => {
-      const data = response.data
-      userTitle.innerText = data.name + data.surname
-      userBirthday.innerText = 'Birthday: ' + data.birthday
-      userAge.innerText = 'Age: ' + data.age
-      userEmail.innerText = 'Email: ' + data.email
-      userGender.innerText = 'Gender: ' + data.gender
-      userRegion.innerText = 'Region: ' + data.region
-      userImage.innerHTML = `<img src="${data.avatar}" alt="User Avatar" class="img-fluid">`
-    })
-    .catch((err) => console.log(err))
-
+  const data = users.find((user) => user.id === id)
+  userTitle.innerText = data.name + data.surname
+  userBirthday.innerText = "Birthday : " + data.birthday
+  userAge.innerText = "Age : " + data.age
+  userEmail.innerText = "Email : " + data.email
+  userGender.innerText = "Gender : " + data.gender
+  userRegion.innerText = "Region : " + data.region
+  userImage.innerHTML = `<img src="${data.avatar}" alt="User Avatar" class="img-fluid">`
 }
-
 
 // FilterForm 監聽事件 -- 篩選資料
 filterForm.addEventListener('submit', function onFilterFormSubmitter(event) {
@@ -121,36 +118,38 @@ filterForm.addEventListener('submit', function onFilterFormSubmitter(event) {
 
 
 // FilterForm 監聽事件 -- 清除篩選資料
-filterForm.addEventListener('click', function onClearClick(event) {
-  let target = event.target
-  if (target.classList.contains('btn-clear-filter')) {
-    filteredList = users
-  }
+clearBtn.addEventListener('click', function onClearClick() {
+  filteredList = users
+  genderSelector.value = 'default'
+  regionSelector.value = 'default'
+
   return renderPagination(filteredList.length), renderUserList(getUsersByPage(1))
 })
 
-
-
 // 加入我的最愛
 function addToFavorite(id) {
-  const list = JSON.parse(localStorage.getItem('favoriteUsers')) || []
   const user = users.find((user) => user.id === id)
+  const userIndex = favoriteList.findIndex((user) => user.id === id)
 
-  if (list.some((user) => user.id === id)) {
-    return alert('已加入我的最愛')
+  if (favoriteList.some((user) => user.id === id)) {
+    favoriteList.splice(userIndex, 1)
+    return localStorage.setItem('favoriteUsers', JSON.stringify(favoriteList))
   }
 
-  list.push(user)
-  localStorage.setItem('favoriteUsers', JSON.stringify(list))
+  favoriteList.push(user)
+  localStorage.setItem('favoriteUsers', JSON.stringify(favoriteList))
 }
 
 // UserCard監聽事件
 dataPanel.addEventListener('click', function onPanelClick(event) {
-  if (event.target.matches('.show-user-info')) {
+  const target = event.target
+
+  if (target.matches('.show-user-info')) {
     showUserMadal(Number(event.target.dataset.id))
-  } else if (event.target.matches('.add-to-favorite')) {
+  } else if (target.matches('.add-to-favorite')) {
     addToFavorite(Number(event.target.dataset.id))
-  }
+    target.classList.toggle('checked')
+  } else return
 })
 
 // 製作分頁器

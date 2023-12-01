@@ -13,7 +13,7 @@ function renderUserList(data) {
     <div class="col mb-3">
         <div class="card h-100">
           <div class="favorite-icon">
-            <i class="fa-regular fa-heart add-to-favorite" data-id="${item.id}"></i>
+            <i class="fa-solid fa-circle-minus remove-from-favorite" data-id="${item.id}"></i>
           </div>
           <img src="${item.avatar}" class="card-img-top show-user-info" alt="User Avatar" data-bs-toggle="modal" data-bs-target="#userModal" data-id="${item.id}">
           <div class="card-body">
@@ -25,6 +25,8 @@ function renderUserList(data) {
   })
   dataPanel.innerHTML = userHTML
 }
+
+
 
 // UserModal
 function showUserMadal(id) {
@@ -52,25 +54,26 @@ function showUserMadal(id) {
 
 }
 
-// 加入我的最愛
-function addToFavorite(id) {
-  const list = JSON.parse(localStorage.getItem('favoriteUsers')) || []
-  const user = users.find((user) => user.id === id)
 
-  if (list.some((user) => user.id === id)) {
-    return alert('已加入我的最愛')
-  }
+// 移除我的最愛
+function removeFromFavorite(id) {
+  const userIndex = users.findIndex((user) => user.id === id)
 
-  list.push(user)
-  localStorage.setItem('favoriteUsers', JSON.stringify(list))
+  users.splice(userIndex, 1)
+
+  localStorage.setItem('favoriteUsers', JSON.stringify(users))
+  renderUserList(users)
 }
+
+
 
 // UserCard監聽事件
 dataPanel.addEventListener('click', function onPanelClick(event) {
   if (event.target.matches('.show-user-info')) {
     showUserMadal(Number(event.target.dataset.id))
+  } else if (event.target.matches('.remove-from-favorite')) {
+    removeFromFavorite(Number(event.target.dataset.id))
   }
 })
 
-console.log(users)
 renderUserList(users)

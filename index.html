@@ -23,10 +23,10 @@
       <div class="collapse navbar-collapse" id="navbarText">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="./index.html">Home</a>
+            <a class="nav-link active" aria-current="page" href="index.html">Home</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link active" href="./favorite.html">Favorite</a>
+            <a class="nav-link active" href="favorite.html">Favorite</a>
           </li>
         </ul>
         <span class="navbar-text">
@@ -36,18 +36,17 @@
       </div>
     </div>
   </nav>
-
+  
   <!-- Website Body -->
   <div class="container mt-4">
     <div class="row mb-3">
       <!-- Filter buttons -->
-      <div class="col-md-3 mb-4" class="filter-btn">
-        <div class="bg-light p-3" class="filter-btn">
+      <div class="col-md-3 mb-4">
+        <div class="bg-light p-3">
           <form class="row row-cols-md-auto g-3" id="filter-form">
-            <div class="justify content center">
+            <div class="mb-3">
               <label for="genderSelector" class="form-label">Gender: </label>
-              <select id="genderSelector" class="form-select form-select-sm" aria-label="Small select example"
-                id="gender-filter">
+              <select id="genderSelector" class="form-select form-select-sm" aria-label="Small select example">
               </select>
             </div>
             <div class="mb-3">
@@ -55,9 +54,10 @@
               <select id="regionSelector" class="form-select form-select-sm" aria-label="Small select example">
               </select>
             </div>
-            <div class="mb-3">
-              <button type="submit" class="btn btn-primary btn-sm btn-get-filter">Search</button>
-              <button type="button" class="btn btn-outline-secondary btn-sm btn-clear-filter">Clear</button>
+            <div class="mb-3"">
+                <button type=" submit" class="btn btn-primary btn-sm btn-get-filter">Search</button>
+              <button type="button" class="btn btn-outline-secondary btn-sm btn-clear-filter"
+                id='clear-btn'>Clear</button>
             </div>
           </form>
         </div>
@@ -65,30 +65,30 @@
       <!-- Render User List -->
       <div class="col-md-9 px-2">
         <div class="row row-cols-1 row-cols-md-4 g-4" id="data-panel">
+          <!-- by js -->
         </div>
       </div>
     </div>
   </div>
-
+  
   <!-- pagination -->
   <nav aria-label="Page navigation example">
     <ul class="pagination justify-content-center" id="paginator">
+      <!-- by js -->
     </ul>
   </nav>
-
+  
   <!-- User Modal -->
   <div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
-      <div class="modal-content">
+      <div class="modal-content" id="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="user-modal-title">User Name</h1>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <h1 class="modal-title fs-5" id="user-modal-title"></h1>
         </div>
         <div class="modal-body" id="user-modal body">
           <div class="row">
             <div class="col-sm-6" id="user-modal-image">
-              <img src="https://robohash.org/repellatvoluptateomnis.png?size=300x300&set=set1" alt="User Avatar"
-                class="img-fluid">
+              <img src="" alt="User Avatar" class="img-fluid">
             </div>
             <div class="col-sm-6">
               <p id="user-modal-birthday"></p>
